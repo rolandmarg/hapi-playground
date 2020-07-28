@@ -1,42 +1,38 @@
-const Glue = require('@hapi/glue');
+import Hapi from '@hapi/hapi';
 
-const Bell = require('@hapi/bell');
-const Cookie = require('@hapi/cookie');
-const Inert = require('@hapi/inert');
-const Vision = require('@hapi/vision');
+import Bell from '@hapi/bell';
+import Cookie from '@hapi/cookie';
+import Inert from '@hapi/inert';
+import Vision from '@hapi/vision';
 
-const HapiSwagger = require('hapi-swagger');
+import HapiSwagger from 'hapi-swagger';
 
-const GoogleAuth = require('./plugins/auth/google');
-const LinkedinAuth = require('./plugins/auth/linkedin');
-const SessionAuth = require('./plugins/auth/session');
+import GoogleAuth from './plugins/auth/google.js';
+import LinkedinAuth from './plugins/auth/linkedin.js';
+import SessionAuth from './plugins/auth/session.js';
 
-const MeetingRoute = require('./plugins/routes/meeting');
+import MeetingRoute from './plugins/routes/meeting.js';
 
-const manifest = {
-  server: {
-    host: 'localhost',
-    port: 3000,
-  },
-  register: {
-    plugins: [
+export async function start() {
+  try {
+    const server = Hapi.server({ host: 'localhost', port: 3000 });
+
+    const plugins = [
       Bell,
       Cookie,
       Inert,
       Vision,
+
       HapiSwagger,
+
       GoogleAuth,
       LinkedinAuth,
       SessionAuth,
+
       MeetingRoute,
-    ],
-  },
-};
+    ];
 
-async function startServer() {
-  try {
-    const server = await Glue.compose(manifest);
-
+    await server.register(plugins);
     await server.start();
 
     console.log('server up', server.info.uri);
@@ -45,5 +41,3 @@ async function startServer() {
     process.exit(1);
   }
 }
-
-module.exports = startServer;

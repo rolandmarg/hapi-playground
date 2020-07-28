@@ -1,7 +1,7 @@
-const Boom = require('@hapi/boom');
-const { createUser } = require('../../controllers/user');
+import Boom from '@hapi/boom';
+import { create } from '../../controllers/user.js';
 
-exports.plugin = {
+export default {
   name: 'linkedin-auth',
   version: '0.0.1',
   dependencies: ['@hapi/bell', 'session-cookie'],
@@ -34,7 +34,7 @@ exports.plugin = {
         const credentials = request.auth.credentials;
         const { name } = request.auth.credentials.profile;
 
-        const session = {
+        const user = {
           name: `${name.first} ${name.last}`,
           email: credentials.profile.email,
           provider: credentials.provider,
@@ -42,9 +42,9 @@ exports.plugin = {
           expiresIn: credentials.expiresIn,
         };
 
-        request.cookieAuth.set(session);
+        request.cookieAuth.set(user);
 
-        createUser(session);
+        create(user);
 
         return h.redirect('/profile');
       },

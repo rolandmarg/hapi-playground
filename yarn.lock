@@ -131,16 +131,7 @@
   resolved "https://registry.yarnpkg.com/@hapi/formula/-/formula-2.0.0.tgz#edade0619ed58c8e4f164f233cda70211e787128"
   integrity sha512-V87P8fv7PI0LH7LiVi8Lkf3x+KCO7pQozXRssAHNXXL9L1K+uyu4XypLXwxqVDKgyQai6qj3/KteNlrqDx4W5A==
 
-"@hapi/glue@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@hapi/glue/-/glue-7.0.0.tgz#012198bc85102d9f441d840940e0f68d066a95e9"
-  integrity sha512-1g5mzwUxZNnzil8Qz6IgFdjPSwmn3rJ5YIgy8h+V1JzF2ASdFf73NtlxdIG7BwwGcSnIwcPrVh1W6PWW2LqfhA==
-  dependencies:
-    "@hapi/hapi" "19.x.x"
-    "@hapi/hoek" "9.x.x"
-    "@hapi/joi" "17.x.x"
-
-"@hapi/hapi@19.x.x", "@hapi/hapi@^19.2.0":
+"@hapi/hapi@^19.2.0":
   version "19.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/hapi/-/hapi-19.2.0.tgz#a177f27d1d067f1fb23de9c0a0b4349502190a7b"
   integrity sha512-Isf/BUPQMRMYK+xx4y2B05lrrGw6PSbJKytk1SlaXeV7tXm6m+6tFRBog6c/na0QNgojafb0bjMB+vBg64CwUA==

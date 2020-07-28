@@ -1,8 +1,7 @@
-const Joi = require('joi');
-const { meetingSchema, postMeetingSchema } = require('../../models/meeting');
-const { getAllMeetings, createMeeting } = require('../../controllers/meeting');
+import model from '../../models/meeting.js';
+import controller from '../../controllers/meeting.js';
 
-exports.plugin = {
+export default {
   name: 'meetings-route',
   version: '0.0.1',
   register: async function (server, options) {
@@ -12,11 +11,11 @@ exports.plugin = {
       options: {
         tags: ['api'],
         response: {
-          schema: Joi.array().items(meetingSchema).label('Meetings'),
+          schema: model.arraySchema,
         },
       },
       handler: async (request, h) => {
-        return getAllMeetings();
+        return controller.getAll();
       },
     });
 
@@ -26,12 +25,12 @@ exports.plugin = {
       options: {
         tags: ['api'],
         validate: {
-          payload: postMeetingSchema,
+          payload: model.postSchema,
         },
-        response: { schema: meetingSchema },
+        response: { schema: model.schema },
       },
       handler: async (request, h) => {
-        return createMeeting(request.payload);
+        return controller.create(request.payload);
       },
     });
   },

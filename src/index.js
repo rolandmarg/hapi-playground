@@ -1,11 +1,11 @@
-require('dotenv').config();
-const startServer = require('./server');
-const db = require('./db');
+import 'dotenv/config.js';
+import { createTables } from './db.js';
+import { start } from './server.js';
 
 async function bootstrap() {
-  await db.createTables();
+  await createTables();
 
-  await startServer();
+  await start();
 }
 
 bootstrap();

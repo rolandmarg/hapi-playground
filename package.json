@@ -1,6 +1,7 @@
 {
   "name": "hapi-playground",
   "version": "1.0.0",
+  "type": "module",
   "main": "src/index.js",
   "repository": "https://github.com/romMidnight/hapi-playground.git",
   "author": "Rom Midnight <rmargve@gmail.com>",
@@ -10,7 +11,6 @@
     "@hapi/bell": "^12.1.0",
     "@hapi/boom": "^9.1.0",
     "@hapi/cookie": "^11.0.1",
-    "@hapi/glue": "^7.0.0",
     "@hapi/hapi": "^19.2.0",
     "@hapi/inert": "^6.0.1",
     "@hapi/vision": "^6.0.0",
