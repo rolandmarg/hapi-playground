@@ -2,7 +2,12 @@ const pg = require('pg');
 const { userTable } = require('./user/schema');
 const { meetingTable } = require('./meeting/schema');
 
-const pool = new pg.Pool();
+let pool;
+
+exports.init = async (options) => {
+  pool = new pg.Pool(options);
+  return pool;
+};
 
 exports.createTables = async () => {
   await pool.query(userTable);

@@ -20,7 +20,8 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "test": "lab -I 'core,__core-js_shared__' -v src/**/*test.js"
   },
   "devDependencies": {
     "@hapi/code": "^8.0.1",

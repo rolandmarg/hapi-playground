@@ -1,11 +1,12 @@
 require('dotenv').config();
-const { createTables } = require('./db');
-const { start } = require('./server');
+const db = require('./db');
+const server = require('./server');
 
 async function bootstrap() {
-  await createTables();
+  await db.init({ connectionString: process.env.DATABASE_URL });
+  await db.createTables();
 
-  await start();
+  await server.start({ host: 'localhost', port: 3000 });
 }
 
 bootstrap();

@@ -9,6 +9,7 @@ exports.get = {
   },
   options: {
     tags: ['api'],
+    auth: false,
     response: {
       schema: schema.meetings,
     },

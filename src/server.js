@@ -5,9 +5,9 @@ const Inert = require('@hapi/inert');
 const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
 
-const authPlugins = require('./auth/plugin');
-const userPlugin = require('./user/plugin');
-const meetingPlugin = require('./meeting/plugin');
+const authPlugins = require('./auth');
+const userPlugin = require('./user');
+const meetingPlugin = require('./meeting');
 
 const plugins = [
   Bell,
@@ -23,9 +23,9 @@ const plugins = [
   meetingPlugin,
 ];
 
-const server = Hapi.server({ host: 'localhost', port: 3000 });
+exports.start = async (options) => {
+  const server = Hapi.server(options);
 
-exports.start = async () => {
   await server.register(plugins);
   await server.start();
 
@@ -34,7 +34,11 @@ exports.start = async () => {
   return server;
 };
 
-exports.init = async () => {
+exports.init = async (plugins) => {
+  const server = Hapi.server({
+    debug: { log: ['*'], request: ['*'] },
+  });
+
   await server.register(plugins);
   await server.initialize();
 
