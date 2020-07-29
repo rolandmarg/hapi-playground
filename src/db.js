@@ -1,14 +1,14 @@
-import pg from 'pg';
-import { table as userTable } from './models/user.js';
-import { table as meetingTable } from './models/meeting.js';
+const pg = require('pg');
+const { userTable } = require('./user/schema');
+const { meetingTable } = require('./meeting/schema');
 
 const pool = new pg.Pool();
 
-export async function createTables() {
+exports.createTables = async () => {
   await pool.query(userTable);
   await pool.query(meetingTable);
-}
+};
 
-export function query(text, params) {
+exports.query = (text, params) => {
   return pool.query(text, params);
-}
+};

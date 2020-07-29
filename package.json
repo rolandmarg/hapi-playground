@@ -1,7 +1,6 @@
 {
   "name": "hapi-playground",
   "version": "1.0.0",
-  "type": "module",
   "main": "src/index.js",
   "repository": "https://github.com/romMidnight/hapi-playground.git",
   "author": "Rom Midnight <rmargve@gmail.com>",
@@ -24,6 +23,8 @@
     "dev": "nodemon src/index.js"
   },
   "devDependencies": {
+    "@hapi/code": "^8.0.1",
+    "@hapi/lab": "^22.0.5",
     "nodemon": "^2.0.4"
   }
 }

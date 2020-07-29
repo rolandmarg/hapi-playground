@@ -1,43 +1,42 @@
-import Hapi from '@hapi/hapi';
+const Hapi = require('@hapi/hapi');
+const Bell = require('@hapi/bell');
+const Cookie = require('@hapi/cookie');
+const Inert = require('@hapi/inert');
+const Vision = require('@hapi/vision');
+const HapiSwagger = require('hapi-swagger');
 
-import Bell from '@hapi/bell';
-import Cookie from '@hapi/cookie';
-import Inert from '@hapi/inert';
-import Vision from '@hapi/vision';
+const authPlugins = require('./auth/plugin');
+const userPlugin = require('./user/plugin');
+const meetingPlugin = require('./meeting/plugin');
 
-import HapiSwagger from 'hapi-swagger';
+const plugins = [
+  Bell,
+  Cookie,
+  Inert,
+  Vision,
+  HapiSwagger,
 
-import GoogleAuth from './plugins/auth/google.js';
-import LinkedinAuth from './plugins/auth/linkedin.js';
-import SessionAuth from './plugins/auth/session.js';
+  authPlugins.cookie,
+  authPlugins.google,
+  authPlugins.linkedin,
+  userPlugin,
+  meetingPlugin,
+];
 
-import MeetingRoute from './plugins/routes/meeting.js';
+const server = Hapi.server({ host: 'localhost', port: 3000 });
 
-export async function start() {
-  try {
-    const server = Hapi.server({ host: 'localhost', port: 3000 });
+exports.start = async () => {
+  await server.register(plugins);
+  await server.start();
 
-    const plugins = [
-      Bell,
-      Cookie,
-      Inert,
-      Vision,
+  console.log('server up', server.info.uri);
 
-      HapiSwagger,
+  return server;
+};
 
-      GoogleAuth,
-      LinkedinAuth,
-      SessionAuth,
+exports.init = async () => {
+  await server.register(plugins);
+  await server.initialize();
 
-      MeetingRoute,
-    ];
-
-    await server.register(plugins);
-    await server.start();
-
-    console.log('server up', server.info.uri);
-  } catch (e) {
-    console.error(e);
-    process.exit(1);
-  }
-}
+  return server;
+};

@@ -1,6 +1,6 @@
-import 'dotenv/config.js';
-import { createTables } from './db.js';
-import { start } from './server.js';
+require('dotenv').config();
+const { createTables } = require('./db');
+const { start } = require('./server');
 
 async function bootstrap() {
   await createTables();

@@ -1,6 +1,6 @@
-import Joi from 'joi';
+const Joi = require('joi');
 
-export const schema = Joi.object({
+exports.session = Joi.object({
   name: Joi.string().max(255).required(),
   email: Joi.string().email().required(),
   provider: Joi.string().max(64).required(),

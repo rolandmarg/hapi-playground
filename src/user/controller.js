@@ -1,6 +1,6 @@
-import { query } from '../db.js';
+const { query } = require('../db');
 
-export async function create({ email }) {
+exports.create = async ({ email }) => {
   const res = await query(
     `INSERT INTO users(email) VALUES ($1)
       ON CONFLICT (email) DO NOTHING
@@ -9,14 +9,12 @@ export async function create({ email }) {
   );
 
   return res.rows[0];
-}
+};
 
-export async function get({ email }) {
+exports.fetchUserByEmail = async ({ email }) => {
   const res = await query('SELECT * FROM users where email = $1', [
     email,
   ]);
 
   return res.rows[0];
-}
-
-export default { create, get };
+};
