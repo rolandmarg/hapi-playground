@@ -28,10 +28,8 @@ describe('Meeting CRUD', () => {
   });
 
   it('get all meetings', async () => {
-    const res = await server.inject({
-      method: 'GET',
-      url: '/meeting',
-    });
+    const res = await server.inject({ method: 'GET', url: '/meeting' });
+
     expect(res.statusCode).to.equal(200);
 
     expect(res.payload).to.equal('[]');
@@ -44,33 +42,39 @@ describe('Meeting CRUD', () => {
       ends_at: new Date().toISOString(),
     };
 
-    let res = schema.createMeeting.validate(meeting);
-    expect(res.error).to.not.exist();
-
-    res = await server.inject({
+    const res = await server.inject({
       method: 'POST',
       url: '/meeting',
       payload: meeting,
     });
+
     expect(res.statusCode).to.equal(200);
 
     const postedMeeting = JSON.parse(res.payload);
 
-    res = schema.meeting.validate(postedMeeting);
-    expect(res.error).to.not.exist();
-
     expect(postedMeeting).to.include(meeting);
+    expect(postedMeeting.id).to.be.number();
+  });
 
-    res = await server.inject({
-      method: 'GET',
+  it('gets meeting after posting', async () => {
+    const meeting = {
+      title: 'testMeeting',
+      starts_at: new Date().toISOString(),
+      ends_at: new Date().toISOString(),
+    };
+
+    let res = await server.inject({
+      method: 'POST',
       url: '/meeting',
+      payload: meeting,
     });
+    const postedMeeting = JSON.parse(res.payload);
+
+    res = await server.inject({ method: 'GET', url: '/meeting' });
+
     expect(res.statusCode).to.equal(200);
 
     const meetings = JSON.parse(res.payload);
-
-    res = schema.meetings.validate(meetings);
-    expect(res.error).to.not.exist();
 
     expect(meetings).to.equal([postedMeeting]);
   });
