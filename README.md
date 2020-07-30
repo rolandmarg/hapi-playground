@@ -10,4 +10,4 @@ Using joi is a bless, it validates my api, and with hapi plugin I'm able to gene
 
 Identifying as a back end developer, sometimes I feel guilty that I'm not strong enough with sql, and using ORM-s to talk with database does not help with that. I decided to ditch typeorm, sequelize and likes to stick with pg library in this project, it gives me ability to write raw sql queries while retaining ability to use dynamic parameters in queries.
 
-p.s. sometimes I dream about having one model, which is used by joi, typescript, database, graphql. There are really cool js libraries out there but making all those young children play together nicely introduces so much bloat and inconsistency. 
+p.s. sometimes I dream about having one model, which is used by joi, typescript, database. There are really cool js libraries out there but making all those young children play together nicely introduces so much bloat and inconsistency. 
