@@ -1,81 +1,105 @@
-const lab = require('@hapi/lab').script();
-const { expect } = require('@hapi/code');
-const { beforeEach, afterEach, describe, it } = lab;
-
+const fc = require('fast-check');
 const db = require('../db');
-const { init } = require('../server');
+const { startTestServer } = require('../server');
 const meetingPlugin = require('./index');
-const schema = require('./schema');
+const { meetingTable } = require('./schema');
 
-exports.lab = lab;
+const validMeetingArb = fc
+  .record({
+    title: fc.string(3, 255),
+    starts_at: fc.date({ min: new Date(), max: new Date('2030') }),
+    ends_at: fc.date({ min: new Date(), max: new Date('2030') }),
+  })
+  .filter((m) => m.ends_at.toISOString() > m.starts_at.toISOString());
+
+const invalidMeetingArb = fc.oneof(
+  fc.record({
+    title: fc.string(1, 2),
+    starts_at: fc.date(),
+    ends_at: fc.date(),
+    badProp: fc.integer(),
+  }),
+  fc.anything()
+);
 
 describe('Meeting CRUD', () => {
   let server;
-  db.init({
-    max: 1,
-    connectionString: 'postgresql://rem@localhost:5432/midnightest',
+  beforeAll(async () => {
+    server = await startTestServer({
+      routePrefix: '/meeting',
+      plugins: meetingPlugin,
+    });
+    await db.query(meetingTable.createQuery);
   });
-  db.query(schema.meetingTable);
+
+  afterAll(async () => {
+    await server.stop();
+    await db.stop();
+  });
 
   beforeEach(async () => {
-    server = await init(meetingPlugin);
-    await db.query('BEGIN');
+    await db.query(meetingTable.truncateQuery);
   });
 
-  afterEach(async () => {
-    server.stop();
-    await db.query('ROLLBACK');
+  it('when posting a meeting without payload, should fail with 400', async () => {
+    const res = await server.post();
+
+    expect(res.statusCode).toBe(400);
   });
 
-  it('get all meetings', async () => {
-    const res = await server.inject({ method: 'GET', url: '/meeting' });
+  it('when posting a meeting with invalid payload, should fail with 400', async () => {
+    await fc.assert(
+      fc.asyncProperty(invalidMeetingArb, async (invalidMeeting) => {
+        const res = await server.post(invalidMeeting);
 
-    expect(res.statusCode).to.equal(200);
-
-    expect(res.payload).to.equal('[]');
+        expect(res.statusCode).toBe(400);
+      })
+    );
   });
 
-  it('posts a meeting', async () => {
-    const meeting = {
-      title: 'testMeeting',
-      starts_at: new Date().toISOString(),
-      ends_at: new Date().toISOString(),
-    };
-
-    const res = await server.inject({
-      method: 'POST',
-      url: '/meeting',
-      payload: meeting,
-    });
-
-    expect(res.statusCode).to.equal(200);
-
-    const postedMeeting = JSON.parse(res.payload);
-
-    expect(postedMeeting).to.include(meeting);
-    expect(postedMeeting.id).to.be.number();
+  it('when posting a meeting with valid payload, should success', async () => {
+    await fc.assert(
+      fc.asyncProperty(validMeetingArb, async (validMeeting) => {
+        const res = await server.post(validMeeting);
+        expect(res.statusCode).toBe(200);
+      })
+    );
   });
 
-  it('gets meeting after posting', async () => {
-    const meeting = {
-      title: 'testMeeting',
-      starts_at: new Date().toISOString(),
-      ends_at: new Date().toISOString(),
-    };
+  it('when posting duplicate meetings, should success', async () => {
+    await fc.assert(
+      fc.asyncProperty(validMeetingArb, async (validMeeting) => {
+        const [res1, res2] = await Promise.all([
+          server.post(validMeeting),
+          server.post(validMeeting),
+        ]);
 
-    let res = await server.inject({
-      method: 'POST',
-      url: '/meeting',
-      payload: meeting,
-    });
-    const postedMeeting = JSON.parse(res.payload);
+        expect(res1.statusCode).toBe(200);
+        expect(res2.statusCode).toBe(200);
+      })
+    );
+  });
 
-    res = await server.inject({ method: 'GET', url: '/meeting' });
+  it('when getting meetings, should return empty array', async () => {
+    const res = await server.get();
 
-    expect(res.statusCode).to.equal(200);
+    expect(res.statusCode).toBe(200);
+    expect(res.payload).toBe('[]');
+  });
 
-    const meetings = JSON.parse(res.payload);
+  it('when posting meeting, should get the same one', async () => {
+    await fc.assert(
+      fc.asyncProperty(validMeetingArb, async (validMeeting) => {
+        const res = await server.post(validMeeting);
 
-    expect(meetings).to.equal([postedMeeting]);
+        expect(res.statusCode).toBe(200);
+
+        const meeting = JSON.parse(res.payload);
+
+        expect(meeting).toHaveProperty('id');
+        expect(meeting.title).toEqual(validMeeting.title);
+        expect(meeting.starts_at).toEqual(validMeeting.starts_at.toISOString());
+      })
+    );
   });
 });

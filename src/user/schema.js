@@ -6,9 +6,12 @@ exports.user = Joi.object({
   created_at: Joi.date().required(),
 }).label('User');
 
-exports.userTable = `
-CREATE TABLE IF NOT EXISTS users (
-  id serial PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  created_at timestamptz DEFAULT current_timestamp
-)`;
+exports.userTable = {
+  createQuery: `
+    CREATE TABLE IF NOT EXISTS users (
+      id serial PRIMARY KEY,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      created_at timestamptz DEFAULT current_timestamp
+    )`,
+  truncateQuery: `TRUNCATE TABLE users`,
+};

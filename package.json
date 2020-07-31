@@ -21,11 +21,17 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "lab -I 'core,__core-js_shared__' -v src/**/*test.js"
+    "test": "jest"
   },
   "devDependencies": {
-    "@hapi/code": "^8.0.1",
-    "@hapi/lab": "^22.0.5",
+    "fast-check": "^2.0.0",
+    "jest": "^26.2.1",
     "nodemon": "^2.0.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "dotenv/config"
+    ]
   }
 }

@@ -23,8 +23,10 @@ const plugins = [
   meetingPlugin,
 ];
 
-exports.start = async (options) => {
-  const server = Hapi.server(options);
+let server;
+
+exports.startServer = async (options) => {
+  server = Hapi.server(options);
 
   await server.register(plugins);
   await server.start();
@@ -34,13 +36,33 @@ exports.start = async (options) => {
   return server;
 };
 
-exports.init = async (plugins) => {
-  const server = Hapi.server({
+exports.startTestServer = async ({ routePrefix = '', plugins }) => {
+  server = Hapi.server({
     debug: { log: ['*'], request: ['*'] },
   });
 
   await server.register(plugins);
   await server.initialize();
 
-  return server;
+  const injectPost = (payload, route = '') => {
+    return server.inject({
+      method: 'POST',
+      url: routePrefix + route,
+      payload,
+    });
+  };
+
+  const injectGet = (route = '') => {
+    return server.inject({ method: 'GET', url: routePrefix + route });
+  };
+
+  const stop = () => {
+    return server.stop();
+  };
+
+  return {
+    get: injectGet,
+    post: injectPost,
+    stop,
+  };
 };
