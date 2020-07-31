@@ -10,7 +10,7 @@ const validMeetingArb = fc
     starts_at: fc.date({ min: new Date(), max: new Date('2030') }),
     ends_at: fc.date({ min: new Date(), max: new Date('2030') }),
   })
-  .filter((m) => m.end.toISOString() > m.start.toISOString());
+  .filter((m) => m.ends_at > m.starts_at);
 
 const invalidMeetingArb = fc.oneof(
   fc.record({
