@@ -14,4 +14,5 @@ exports.userTable = {
       created_at timestamptz DEFAULT current_timestamp
     )`,
   truncateQuery: 'TRUNCATE TABLE users',
+  dropQuery: 'DROP TABLE users',
 };

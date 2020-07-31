@@ -7,16 +7,16 @@ const { meetingTable } = require('./schema');
 const validMeetingArb = fc
   .record({
     title: fc.string(3, 255),
-    start: fc.date({ min: new Date(), max: new Date('2030') }),
-    end: fc.date({ min: new Date(), max: new Date('2030') }),
+    starts_at: fc.date({ min: new Date(), max: new Date('2030') }),
+    ends_at: fc.date({ min: new Date(), max: new Date('2030') }),
   })
   .filter((m) => m.end.toISOString() > m.start.toISOString());
 
 const invalidMeetingArb = fc.oneof(
   fc.record({
     title: fc.string(1, 2),
-    start: fc.date(),
-    end: fc.date(),
+    starts_at: fc.date(),
+    ends_at: fc.date(),
     badProp: fc.integer(),
   }),
   fc.anything()
@@ -29,6 +29,7 @@ describe('Meeting CRUD', () => {
       routePrefix: '/meeting',
       plugins: meetingPlugin,
     });
+    await db.query(meetingTable.dropQuery);
     await db.query(meetingTable.createQuery);
   });
 
