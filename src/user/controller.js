@@ -12,9 +12,7 @@ exports.create = async ({ email }) => {
 };
 
 exports.fetchUserByEmail = async ({ email }) => {
-  const res = await query('SELECT * FROM users where email = $1', [
-    email,
-  ]);
+  const res = await query('SELECT * FROM users where email = $1', [email]);
 
   return res.rows[0];
 };

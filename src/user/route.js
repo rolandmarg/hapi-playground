@@ -7,7 +7,5 @@ exports.getProfile = {
     tags: ['api'],
     response: { schema: session },
   },
-  handler: async (request, h) => {
-    return request.auth.credentials;
-  },
+  handler: async (request) => request.auth.credentials,
 };

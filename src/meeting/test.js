@@ -7,16 +7,16 @@ const { meetingTable } = require('./schema');
 const validMeetingArb = fc
   .record({
     title: fc.string(3, 255),
-    starts_at: fc.date({ min: new Date(), max: new Date('2030') }),
-    ends_at: fc.date({ min: new Date(), max: new Date('2030') }),
+    start: fc.date({ min: new Date(), max: new Date('2030') }),
+    end: fc.date({ min: new Date(), max: new Date('2030') }),
   })
-  .filter((m) => m.ends_at.toISOString() > m.starts_at.toISOString());
+  .filter((m) => m.end.toISOString() > m.start.toISOString());
 
 const invalidMeetingArb = fc.oneof(
   fc.record({
     title: fc.string(1, 2),
-    starts_at: fc.date(),
-    ends_at: fc.date(),
+    start: fc.date(),
+    end: fc.date(),
     badProp: fc.integer(),
   }),
   fc.anything()
@@ -98,7 +98,7 @@ describe('Meeting CRUD', () => {
 
         expect(meeting).toHaveProperty('id');
         expect(meeting.title).toEqual(validMeeting.title);
-        expect(meeting.starts_at).toEqual(validMeeting.starts_at.toISOString());
+        expect(meeting.start).toEqual(validMeeting.start.toISOString());
       })
     );
   });

@@ -18,15 +18,38 @@
     "joi": "^17.1.1",
     "pg": "^8.3.0"
   },
+  "devDependencies": {
+    "eslint": "7.2.0",
+    "eslint-config-airbnb-base": "14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jest": "^23.20.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "fast-check": "^2.0.0",
+    "husky": "^4.2.5",
+    "jest": "^26.2.1",
+    "lint-staged": "^10.2.11",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
+  },
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write .",
+    "lint": "eslint --fix . "
   },
-  "devDependencies": {
-    "fast-check": "^2.0.0",
-    "jest": "^26.2.1",
-    "nodemon": "^2.0.4"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test"
+    }
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "jest": {
     "testEnvironment": "node",

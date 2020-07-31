@@ -1,10 +1,10 @@
 const { query } = require('../db');
 
-exports.create = async ({ title, starts_at, ends_at }) => {
+exports.create = async ({ title, start, end }) => {
   const res = await query(
-    `INSERT INTO meetings(title, starts_at, ends_at) VALUES ($1, $2, $3)
+    `INSERT INTO meetings(title, start, end) VALUES ($1, $2, $3)
       RETURNING *`,
-    [title, starts_at, ends_at]
+    [title, start, end]
   );
 
   return res.rows[0];

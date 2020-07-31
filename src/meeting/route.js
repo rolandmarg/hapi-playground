@@ -4,9 +4,7 @@ const { fetch, create } = require('./controller');
 exports.get = {
   method: 'GET',
   path: '/meeting',
-  handler: async (request, h) => {
-    return fetch();
-  },
+  handler: async () => fetch(),
   options: {
     tags: ['api'],
     auth: false,
@@ -19,9 +17,7 @@ exports.get = {
 exports.post = {
   method: 'POST',
   path: '/meeting',
-  handler: async (request, h) => {
-    return create(request.payload);
-  },
+  handler: async (request) => create(request.payload),
   options: {
     tags: ['api'],
     response: { schema: schema.meeting },

@@ -27,14 +27,14 @@ exports.googleAuth = {
       strategy: 'google',
     },
   },
-  handler: function (request, h) {
+  handler(request, h) {
     request.cookieAuth.clear();
 
     if (!request.auth.isAuthenticated) {
       return Boom.unauthorized('Google authentication failed');
     }
 
-    const credentials = request.auth.credentials;
+    const { credentials } = request.auth;
 
     const user = {
       name: credentials.profile.displayName,
@@ -62,14 +62,14 @@ exports.linkedinAuth = {
       strategy: 'linkedin',
     },
   },
-  handler: function (request, h) {
+  handler(request, h) {
     request.cookieAuth.clear();
 
     if (!request.auth.isAuthenticated) {
       return Boom.unauthorized('Linkedin authentication failed');
     }
 
-    const credentials = request.auth.credentials;
+    const { credentials } = request.auth;
     const { name } = request.auth.credentials.profile;
 
     const user = {

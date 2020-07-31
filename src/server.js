@@ -9,29 +9,29 @@ const authPlugins = require('./auth');
 const userPlugin = require('./user');
 const meetingPlugin = require('./meeting');
 
-const plugins = [
-  Bell,
-  Cookie,
-  Inert,
-  Vision,
-  HapiSwagger,
-
-  authPlugins.cookie,
-  authPlugins.google,
-  authPlugins.linkedin,
-  userPlugin,
-  meetingPlugin,
-];
-
 let server;
 
 exports.startServer = async (options) => {
   server = Hapi.server(options);
 
+  const plugins = [
+    Bell,
+    Cookie,
+    Inert,
+    Vision,
+    HapiSwagger,
+
+    authPlugins.cookie,
+    authPlugins.google,
+    authPlugins.linkedin,
+    userPlugin,
+    meetingPlugin,
+  ];
+
   await server.register(plugins);
   await server.start();
 
-  console.log('server up', server.info.uri);
+  server.log('running on', server.info.uri);
 
   return server;
 };
@@ -44,21 +44,17 @@ exports.startTestServer = async ({ routePrefix = '', plugins }) => {
   await server.register(plugins);
   await server.initialize();
 
-  const injectPost = (payload, route = '') => {
-    return server.inject({
+  const injectPost = (payload, route = '') =>
+    server.inject({
       method: 'POST',
       url: routePrefix + route,
       payload,
     });
-  };
 
-  const injectGet = (route = '') => {
-    return server.inject({ method: 'GET', url: routePrefix + route });
-  };
+  const injectGet = (route = '') =>
+    server.inject({ method: 'GET', url: routePrefix + route });
 
-  const stop = () => {
-    return server.stop();
-  };
+  const stop = () => server.stop();
 
   return {
     get: injectGet,

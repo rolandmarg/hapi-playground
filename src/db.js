@@ -14,10 +14,6 @@ exports.createTables = async () => {
   await pool.query(meetingTable.createQuery);
 };
 
-exports.query = (text, params) => {
-  return pool.query(text, params);
-};
+exports.query = (text, params) => pool.query(text, params);
 
-exports.stop = () => {
-  return pool.end();
-};
+exports.stop = () => pool.end();

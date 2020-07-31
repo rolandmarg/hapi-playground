@@ -13,5 +13,5 @@ exports.userTable = {
       email VARCHAR(255) UNIQUE NOT NULL,
       created_at timestamptz DEFAULT current_timestamp
     )`,
-  truncateQuery: `TRUNCATE TABLE users`,
+  truncateQuery: 'TRUNCATE TABLE users',
 };

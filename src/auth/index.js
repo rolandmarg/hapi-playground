@@ -4,7 +4,7 @@ exports.linkedin = {
   name: 'linkedin-auth',
   version: '1.0.0',
   dependencies: ['@hapi/bell', 'cookie-auth'],
-  register: async function (server, options) {
+  register: async (server) => {
     server.auth.strategy('linkedin', 'bell', {
       provider: 'linkedin',
       password: process.env.COOKIE_SECRET,
@@ -21,7 +21,7 @@ exports.google = {
   name: 'google-auth',
   version: '1.0.0',
   dependencies: ['@hapi/bell', 'cookie-auth'],
-  register: async function (server, options) {
+  register: async (server) => {
     server.auth.strategy('google', 'bell', {
       provider: 'google',
       password: process.env.COOKIE_SECRET,
@@ -38,7 +38,7 @@ exports.cookie = {
   name: 'cookie-auth',
   version: '1.0.0',
   dependencies: ['@hapi/cookie'],
-  register: async function (server, options) {
+  register: async (server) => {
     server.auth.strategy('session', 'cookie', {
       cookie: {
         password: process.env.COOKIE_SECRET,
