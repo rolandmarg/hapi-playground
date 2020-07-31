@@ -34,5 +34,5 @@ exports.meetingTable = {
       ends_at TIMESTAMPTZ NOT NULL
     )`,
   truncateQuery: 'TRUNCATE TABLE meetings',
-  dropQuery: 'DROP TABLE meetings',
+  dropQuery: 'DROP TABLE IF EXISTS meetings',
 };
