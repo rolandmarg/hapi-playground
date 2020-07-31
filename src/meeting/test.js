@@ -99,7 +99,8 @@ describe('Meeting CRUD', () => {
 
         expect(meeting).toHaveProperty('id');
         expect(meeting.title).toEqual(validMeeting.title);
-        expect(meeting.start).toEqual(validMeeting.start.toISOString());
+        expect(meeting.starts_at).toEqual(validMeeting.starts_at.toISOString());
+        expect(meeting.ends_at).toEqual(validMeeting.ends_at.toISOString());
       })
     );
   });
