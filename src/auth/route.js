@@ -1,9 +1,19 @@
 const Boom = require('@hapi/boom');
-const { create } = require('../user/controller');
+const { session } = require('./schema');
+
+exports.getCredentials = {
+  method: 'GET',
+  path: '/auth/credentials',
+  options: {
+    tags: ['api'],
+    response: { schema: session },
+  },
+  handler: async (request) => request.auth.credentials,
+};
 
 exports.logout = {
   method: 'POST',
-  path: '/logout',
+  path: '/auth/logout',
   options: {
     tags: ['api'],
     auth: {
@@ -46,8 +56,6 @@ exports.googleAuth = {
 
     request.cookieAuth.set(user);
 
-    create(user);
-
     return h.redirect('/profile');
   },
 };
@@ -81,8 +89,6 @@ exports.linkedinAuth = {
     };
 
     request.cookieAuth.set(user);
-
-    create(user);
 
     return h.redirect('/profile');
   },

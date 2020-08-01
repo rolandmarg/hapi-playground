@@ -7,8 +7,8 @@ const { meetingTable } = require('./schema');
 const validMeetingArb = fc
   .record({
     title: fc.string(3, 255),
-    starts_at: fc.date({ min: new Date(), max: new Date('2030') }),
-    ends_at: fc.date({ min: new Date(), max: new Date('2030') }),
+    starts_at: fc.date({ min: new Date(), max: new Date('2025') }),
+    ends_at: fc.date({ min: new Date(), max: new Date('2025') }),
   })
   .filter((m) => m.ends_at > m.starts_at);
 
@@ -50,8 +50,8 @@ describe('Meeting CRUD', () => {
 
   it('when posting a meeting with invalid payload, should fail with 400', async () => {
     await fc.assert(
-      fc.asyncProperty(invalidMeetingArb, async (invalidMeeting) => {
-        const res = await server.post(invalidMeeting);
+      fc.asyncProperty(invalidMeetingArb, async (payload) => {
+        const res = await server.post({ payload });
 
         expect(res.statusCode).toBe(400);
       })
@@ -60,8 +60,9 @@ describe('Meeting CRUD', () => {
 
   it('when posting a meeting with valid payload, should success', async () => {
     await fc.assert(
-      fc.asyncProperty(validMeetingArb, async (validMeeting) => {
-        const res = await server.post(validMeeting);
+      fc.asyncProperty(validMeetingArb, async (payload) => {
+        const res = await server.post({ payload });
+
         expect(res.statusCode).toBe(200);
       })
     );
@@ -69,10 +70,10 @@ describe('Meeting CRUD', () => {
 
   it('when posting duplicate meetings, should success', async () => {
     await fc.assert(
-      fc.asyncProperty(validMeetingArb, async (validMeeting) => {
+      fc.asyncProperty(validMeetingArb, async (payload) => {
         const [res1, res2] = await Promise.all([
-          server.post(validMeeting),
-          server.post(validMeeting),
+          server.post({ payload }),
+          server.post({ payload }),
         ]);
 
         expect(res1.statusCode).toBe(200);
@@ -90,17 +91,17 @@ describe('Meeting CRUD', () => {
 
   it('when posting meeting, should get the same one', async () => {
     await fc.assert(
-      fc.asyncProperty(validMeetingArb, async (validMeeting) => {
-        const res = await server.post(validMeeting);
+      fc.asyncProperty(validMeetingArb, async (payload) => {
+        const res = await server.post({ payload });
 
         expect(res.statusCode).toBe(200);
 
         const meeting = JSON.parse(res.payload);
 
         expect(meeting).toHaveProperty('id');
-        expect(meeting.title).toEqual(validMeeting.title);
-        expect(meeting.starts_at).toEqual(validMeeting.starts_at.toISOString());
-        expect(meeting.ends_at).toEqual(validMeeting.ends_at.toISOString());
+        expect(meeting.title).toEqual(payload.title);
+        expect(meeting.starts_at).toEqual(payload.starts_at.toISOString());
+        expect(meeting.ends_at).toEqual(payload.ends_at.toISOString());
       })
     );
   });

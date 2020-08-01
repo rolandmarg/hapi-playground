@@ -1,6 +1,8 @@
-const { logout, googleAuth, linkedinAuth } = require('./route');
+const Bell = require('@hapi/bell');
+const Cookie = require('@hapi/cookie');
+const { logout, googleAuth, linkedinAuth, getCredentials } = require('./route');
 
-exports.linkedin = {
+const linkedin = {
   name: 'linkedin-auth',
   version: '1.0.0',
   dependencies: ['@hapi/bell', 'cookie-auth'],
@@ -17,7 +19,7 @@ exports.linkedin = {
   },
 };
 
-exports.google = {
+const google = {
   name: 'google-auth',
   version: '1.0.0',
   dependencies: ['@hapi/bell', 'cookie-auth'],
@@ -34,7 +36,7 @@ exports.google = {
   },
 };
 
-exports.cookie = {
+const cookieAuth = {
   name: 'cookie-auth',
   version: '1.0.0',
   dependencies: ['@hapi/cookie'],
@@ -52,6 +54,9 @@ exports.cookie = {
 
     server.auth.default('session');
 
+    server.route(getCredentials);
     server.route(logout);
   },
 };
+
+module.exports = [Bell, Cookie, linkedin, google, cookieAuth];

@@ -1,6 +1,5 @@
 const Hapi = require('@hapi/hapi');
-const Bell = require('@hapi/bell');
-const Cookie = require('@hapi/cookie');
+
 const Inert = require('@hapi/inert');
 const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
@@ -15,15 +14,11 @@ exports.startServer = async (options) => {
   server = Hapi.server(options);
 
   const plugins = [
-    Bell,
-    Cookie,
     Inert,
     Vision,
     HapiSwagger,
 
-    authPlugins.cookie,
-    authPlugins.google,
-    authPlugins.linkedin,
+    ...authPlugins,
     userPlugin,
     meetingPlugin,
   ];
@@ -38,21 +33,27 @@ exports.startServer = async (options) => {
 
 exports.startTestServer = async ({ routePrefix = '', plugins }) => {
   server = Hapi.server({
-    debug: { log: ['*'], request: ['*'] },
+    debug: { log: ['*'] },
   });
 
   await server.register(plugins);
   await server.initialize();
 
-  const injectPost = (payload, route = '') =>
-    server.inject({
+  const injectPost = ({ url, payload } = {}) => {
+    return server.inject({
       method: 'POST',
-      url: routePrefix + route,
+      url: routePrefix + (url || ''),
       payload,
     });
+  };
 
-  const injectGet = (route = '') =>
-    server.inject({ method: 'GET', url: routePrefix + route });
+  const injectGet = ({ url, payload } = {}) => {
+    return server.inject({
+      method: 'GET',
+      url: routePrefix + (url || ''),
+      payload,
+    });
+  };
 
   const stop = () => server.stop();
 
